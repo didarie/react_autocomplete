@@ -5,12 +5,22 @@ import { peopleFromServer } from './data/people';
 import { Dropdown } from './components/Dropdown';
 import { Person } from './types/Person';
 
-export const App: React.FC = () => {
+interface Props {
+  debounceDelay?: number;
+}
+
+export const App: React.FC<Props> = ({ debounceDelay = 300 }) => {
   const [query, setQuery] = useState('');
   const [focused, setFocused] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
-  const applyQuery = useMemo(() => debounce(setQuery, 300), []);
+  const applyFilter = useMemo(
+    () =>
+      debounce((currentQuery: string) => {
+        setQuery(currentQuery);
+      }, debounceDelay),
+    [debounceDelay],
+  );
 
   const filteredPeople = useMemo(() => {
     return peopleFromServer.filter(person =>
@@ -20,8 +30,7 @@ export const App: React.FC = () => {
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedPerson(null);
-    applyQuery(event.target.value);
-    setQuery(event.target.value);
+    applyFilter(event.target.value);
   };
 
   const handleOnSelect = useCallback(
