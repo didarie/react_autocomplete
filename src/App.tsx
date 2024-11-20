@@ -20,8 +20,8 @@ export const App: React.FC = () => {
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedPerson(null);
-    setQuery(event.target.value);
     applyQuery(event.target.value);
+    setQuery(event.target.value);
   };
 
   const handleOnSelect = useCallback(
